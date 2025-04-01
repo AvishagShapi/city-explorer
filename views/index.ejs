@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><title>City Explorer</title></head>
+<body>
+  <h1>City Explorer - Culture & Travel</h1>
+  <p><strong>Headline:</strong> Hidden Gems: 5 Small Towns in Europe Worth Visiting</p>
+  <p>From the pastel houses of Burano in Italy to the serene lakes of Hallstatt in Austria, these under-the-radar European towns offer breathtaking views, rich history, and unforgettable local charm. Perfect for your next escape from the tourist crowds.</p>
+
+  <% if (user) { %>
+    <p>Welcome, <%= user %>! <a href="/logout">Logout</a></p>
+  <% } else { %>
+    <p><a href="/login">Login</a></p>
+  <% } %>
+
+  <h3>Leave a Comment:</h3>
+  <form action="/comment" method="POST" enctype="multipart/form-data">
+    <textarea name="text" rows="4" cols="50" placeholder="What’s your favorite hidden gem in Europe?"></textarea><br>
+    <input type="file" name="image"><br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <h2>Comments:</h2>
+  <% comments.forEach(c => { %>
+    <div>
+      <strong><%= c.user %></strong>: <span><%- c.text %></span>
+      <% if (c.image) { %><br><img src="<%= c.image %>" height="100"><% } %>
+      <% if (user && c.user === user) { %>
+        <form method="POST" action="/comment/<%= c.id %>/delete" style="display:inline;">
+          <button type="submit">Delete</button>
+        </form>
+        <a href="/comment/<%= c.id %>/edit">Edit</a>
+      <% } %>
+    </div>
+    <hr>
+  <% }) %>
+</body>
+</html>
