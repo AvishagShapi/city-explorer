@@ -27,11 +27,20 @@ app.get('/', (req, res) => {
   res.render('index', { user: req.session.user, comments });
 });
 
+app.get('/register', (req, res) => res.render('register'));
+app.post('/register', (req, res) => {
+  const { email, password } = req.body;
+  if (users.find(u => u.email === email)) return res.send('User already exists.');
+  users.push({ email, password });
+  req.session.user = { email };
+  res.redirect('/');
+});
+
 app.get('/login', (req, res) => res.render('login'));
 app.post('/login', (req, res) => {
   const user = users.find(u => u.email === req.body.email && u.password === req.body.password);
   if (!user) return res.send('Invalid credentials');
-  req.session.user = user;
+  req.session.user = { email: user.email };
   res.redirect('/');
 });
 
@@ -68,4 +77,4 @@ app.post('/comment/:id/delete', (req, res) => {
   res.redirect('/');
 });
 
-app.listen(PORT, () => console.log(`Anonymous portal running at http://localhost:${PORT}`));
+app.listen(PORT, () => console.log(`Portal running at http://localhost:${PORT}`));
